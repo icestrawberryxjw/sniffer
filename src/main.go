@@ -4,18 +4,17 @@ import (
 	"log"
 	"time"
 	"github.com/icestrawberryxjw/gopacket/afpacket"
-	//"github.com/tsg/gopacket/afpacket"
-	"github.com/tsg/gopacket/pcap"
-	//"github.com/google/gopacket/pcap"
+	//"github.com/tsg/gopacket/pcap"
+	//"github.com/tsg/gopacket/layers"
 	"os"
-
-
-
-	//"github.com/tsg/gopacket/pcapgo"
-	"github.com/tsg/gopacket/layers"
 	//"unsafe"
 	//"github.com/google/gopacket"
-	"syscall"
+	//"github.com/tsg/gopacket/afpacket"
+	//"github.com/tsg/gopacket/pcapgo"
+	//"github.com/google/gopacket/pcap"
+
+	"github.com/icestrawberryxjw/gopacket/layers"
+	"github.com/icestrawberryxjw/gopacket/pcap"
 )
 
 type afpacketHandle struct {
@@ -100,18 +99,18 @@ func main() {
 		data,ci,err := h.TPacket.ZeroCopyReadPacketData()
 
 		if err!=nil{
-			if err==syscall.EINTR{
-				fmt.Println("timeout......")
+			if err==afpacket.ErrTimeout{
+				//fmt.Println("timeout......")
 				continue
 			}
 			log.Fatal(err)
 		}
-		fmt.Println(data,ci)
+		//fmt.Println(data,ci)
 
-		//err =dumper.WritePacketData(data, ci)
-		//if err!=nil{
-		//	log.Fatal(err)
-		//}
+		err =dumper.WritePacketData(data, ci)
+		if err!=nil{
+			log.Fatal(err)
+		}
 		//fmt.Println(2)
 
 		//err=w.WritePacket(ci, data)
@@ -123,10 +122,10 @@ func main() {
 		//Stats, err :=h.Stats()
 		//fmt.Println("state packet:",Stats.Packets)
 		//fmt.Println("state poll:",Stats.Polls)
-		//if packetnum==1000{
-		//	dumper.Flush()
-		//	return
-		//}
+		if packetnum==10000{
+			dumper.Flush()
+			//return
+		}
 	}
 	//defer fmt.Println("game over...")
 }
