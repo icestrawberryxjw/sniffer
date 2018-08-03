@@ -30,6 +30,15 @@ var (
 	//handle     *pcap.Handle
 	buffersizeMb int           =500
 )
+
+func openDumper(file string, linkType layers.LinkType) (*pcap.Dumper, error) {
+	p, err := pcap.OpenDead(linkType, 65535)
+	if err != nil {
+		return nil, err
+	}
+	return p.NewDumper(file)
+}
+
 func OpenAFpacket(nic string)( *afpacketHandle,error){
 
 	handle := &afpacketHandle{}
@@ -51,9 +60,7 @@ func OpenAFpacket(nic string)( *afpacketHandle,error){
 		afpacket.OptNumBlocks(numBlocks),
 		afpacket.OptPollTimeout(timeout))
 	return handle,err
-
 }
-
 
 func afpacketComputeSize(targetSizeMb int, snaplen int, pageSize int) (
 	frameSize int, blockSize int, numBlocks int, err error) {
@@ -127,15 +134,5 @@ func main() {
 			//return
 		}
 	}
-	//defer fmt.Println("game over...")
-}
-
-func openDumper(file string, linkType layers.LinkType) (*pcap.Dumper, error) {
-	p, err := pcap.OpenDead(linkType, 65535)
-	if err != nil {
-		return nil, err
-	}
-
-	return p.NewDumper(file)
 }
 
